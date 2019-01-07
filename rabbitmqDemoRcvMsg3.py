@@ -2,7 +2,7 @@
 import pika
 import datetime
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq.local.svc'))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq.check-sites.svc.cluster.local'))
 channel = connection.channel()
 
 
