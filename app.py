@@ -18,7 +18,7 @@ def callback(ch, method, properties, body):
     b = datetime.datetime.now()
     delta = b - a
 
-    log_message = "{0!s} {0!s} http status code: {0!s} took {{0!s}".format(str(datetime.datetime), val[0], 
+    log_message = "{0!s} {0!s} http status code: {0!s} took {0!s}".format(str(datetime.datetime), val[0], 
                                                                                                    r.status_code, 
                                                                                                    delta.total_seconds())
     print(log_message)
