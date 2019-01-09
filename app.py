@@ -16,9 +16,12 @@ def callback(ch, method, properties, body):
     a = datetime.datetime.now()
     r = requests.get(body)
     b = datetime.datetime.now()
-    c = datetime.datetime.strptime(b, "%Y-%m-%dT%H:%M:%SZ") - datetime.datetime.strptime(a, "%Y-%m-%dT%H:%M:%SZ")
+    delta = b - a
+    print( // 60)
     
-    log_message = "{0!s} {0!s} http status code: {0!s} took {{0!s}".format(str(datetime.datetime), val[0], r.status_code, c)
+    log_message = "{0!s} {0!s} http status code: {0!s} took {{0!s}".format(str(datetime.datetime), val[0], 
+                                                                                                   r.status_code, 
+                                                                                                   delta.total_seconds())
     print(log_message)
     channel.basic_publish(exchange='', routing_key='hello', body=body)
     #channel.basic_publish(exchange='', routing_key='log', body=log_message)
