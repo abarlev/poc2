@@ -14,7 +14,7 @@ def callback(ch, method, properties, body):
     print(" [x] Received %r" % body)
     val = str(body).split(',')
     a = datetime.datetime.now()
-    r = requests.get(body)
+    r = requests.get(val[0])
     b = datetime.datetime.now()
     c = datetime.datetime.strptime(b, "%Y-%m-%dT%H:%M:%SZ") - datetime.datetime.strptime(a, "%Y-%m-%dT%H:%M:%SZ")
     
