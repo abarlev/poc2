@@ -18,9 +18,11 @@ def callback(ch, method, properties, body):
     b = datetime.datetime.now()
     delta = b - a
 
-    log_message = "{0!s} {0!s} http status code: {0!s} took {0!s}".format(str(datetime.datetime), val[0], 
-                                                                                                   r.status_code, 
-                                                                                                   delta.total_seconds())
+    log_message = "{0} {1} http status code: {2} took {3} seconds".format(str(datetime.datetime.now()), 
+                                                                          body, 
+                                                                          r.status_code,
+                                                                          delta.total_seconds())
+    
     print(log_message)
     channel.basic_publish(exchange='', routing_key='hello', body=body)
     #channel.basic_publish(exchange='', routing_key='log', body=log_message)
