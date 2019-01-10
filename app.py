@@ -50,4 +50,4 @@ print(' [*] Waiting for messages.')
 try:
     channel.start_consuming()
 except Exception as e:
-    print('Problem with accessing the queue: " + str(e))
+    print('Problem with accessing the queue: ' + str(e))
