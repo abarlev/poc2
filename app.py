@@ -21,7 +21,7 @@ def callback(ch, method, properties, body):
         timeout = True
         log_message = "{0} TIMEOUT {1}".format(str(datetime.datetime.now()), body)
     b = datetime.datetime.now()
-    if !timeout:
+    if not timeout:
         delta = b - a
         body_text = r.text
         start = body_text.find('<title>') + 7
