@@ -20,8 +20,8 @@ def callback(ch, method, properties, body):
     body_text = r.text
     start = body_text.find('<title>') + 7
     end = body_text.find('</title>')
-    print("start: {0}, end: {1}".format(start, end)
-    title = 'title' #body_text[start : end]
+    print("start: {0}, end: {1}".format(start, end))
+    title = body_text[start : end]
 
     log_message = "{0} {1} http status code: {2} took {3} seconds. Title found: '{4}'".format(str(datetime.datetime.now()), 
                                                                           body, 
