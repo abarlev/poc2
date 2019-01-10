@@ -17,7 +17,7 @@ def callback(ch, method, properties, body):
     a = datetime.datetime.now()
     try:
         r = requests.get(body)
-    except requests.exceptions.RequestException.Timeout:
+    except Timeout:
         timeout = True
         log_message = "{0} TIMEOUT {1}".format(str(datetime.datetime.now()), body)
     b = datetime.datetime.now()
