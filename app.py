@@ -17,7 +17,7 @@ def callback(ch, method, properties, body):
     a = datetime.datetime.now()
     try:
         r = requests.get(body)
-    except Exception, e:
+    except Exception as e:
         timeout = True
         log_message = "{0} Exception: {1} URL: {2}".format(str(datetime.datetime.now()), str(e), body)
     b = datetime.datetime.now()
