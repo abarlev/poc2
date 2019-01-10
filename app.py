@@ -46,5 +46,8 @@ channel.basic_consume(callback,
                       queue='hello',
                       no_ack=True)
 
-print(' [*] Waiting for messages. To exit press CTRL+C')
-channel.start_consuming()
+print(' [*] Waiting for messages.')
+try:
+    channel.start_consuming()
+except Exception as e:
+    print('Problem with accessing the queue: " + str(e))
