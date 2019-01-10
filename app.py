@@ -17,11 +17,14 @@ def callback(ch, method, properties, body):
     r = requests.get(body)
     b = datetime.datetime.now()
     delta = b - a
+    body_text = r.text
+    title = body_text[body_text.find('<title>') + 7 : body_text.find('</title>')]
 
-    log_message = "{0} {1} http status code: {2} took {3} seconds".format(str(datetime.datetime.now()), 
+    log_message = "{0} {1} http status code: {2} took {3} seconds. Title found: '{4}'".format(str(datetime.datetime.now()), 
                                                                           body, 
                                                                           r.status_code,
-                                                                          delta.total_seconds())
+                                                                          delta.total_seconds(),
+                                                                          title)
     
     print(log_message)
     channel.basic_publish(exchange='', routing_key='hello', body=body)
