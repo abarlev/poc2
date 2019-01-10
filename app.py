@@ -18,7 +18,10 @@ def callback(ch, method, properties, body):
     b = datetime.datetime.now()
     delta = b - a
     body_text = r.text
-    title = body_text[body_text.find('<title>') + 7 : body_text.find('</title>')]
+    start = body_text.find('<title>') + 7
+    end = body_text.find('</title>')
+    print("start: {0}, end: {1}".format(start, end)
+    title = body_text[start : end]
 
     log_message = "{0} {1} http status code: {2} took {3} seconds. Title found: '{4}'".format(str(datetime.datetime.now()), 
                                                                           body, 
@@ -27,9 +30,9 @@ def callback(ch, method, properties, body):
                                                                           title)
     
     print(log_message)
-    channel.basic_publish(exchange='', routing_key='hello', body=body)
-    #channel.basic_publish(exchange='', routing_key='log', body=log_message)
-    print(" [x] Sent '%r'" % val)
+    # Not refilling queue yet
+    #channel.basic_publish(exchange='', routing_key='hello', body=body)
+    #print(" [x] Sent '%r'" % body)
 
 channel.basic_consume(callback,
                       queue='hello',
