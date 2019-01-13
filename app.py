@@ -50,7 +50,7 @@ def callback(ch, method, properties, body):
     #print(" [x] Sent '%r'" % body)
 
 channel.basic_consume(callback,
-                      queue='hello',
+                      queue='sites',
                       no_ack=True)
 
 print(' [*] Waiting for messages.')
