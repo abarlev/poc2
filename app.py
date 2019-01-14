@@ -43,8 +43,7 @@ def callback(ch, method, properties, body):
         else:
             title = 'no title found'
 
-        log_message = "{0} {1} http status code: {2} took {3} seconds. Title match: {4}".format(str(datetime.datetime.now()), 
-                                                                              body, 
+        log_message = "{0} http status code: {1} took {2} seconds. Title match: {3}".format(str(datetime.datetime.now()), 
                                                                               r.status_code,
                                                                               delta.total_seconds(),
                                                                               title_match)
