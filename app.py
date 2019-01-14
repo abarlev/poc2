@@ -34,6 +34,7 @@ def callback(ch, method, properties, body):
         is_title = True
         if start > 7:
             title = body_text[start : end]
+            print('title: {0}, data["Title"]: {1}'.format(title, data['Title']))
             if title == data['Title']:
                 title_match = True
             else:
