@@ -13,7 +13,7 @@ print("NEW VERSION!!! (added my_strip())")
 channel.queue_declare(queue='sites')
 channel.queue_declare(queue='log')
 
-def do_titles_match():
+def do_titles_match(data, r):
     expected_title = my_strip(data['Title'])
     if len(expected_title) <= 1:
         return false
@@ -60,7 +60,7 @@ def callback(ch, method, properties, body):
     if not timeout:
         delta = b - a
         
-        titles_match = do_titles_match()
+        titles_match = do_titles_match(body, r)
         if not titles_match:
             actual_title = get_title(r.text)
             expected_title = my_strip(data['Title'])
@@ -69,7 +69,7 @@ def callback(ch, method, properties, body):
                                                                               data['Site'],
                                                                               r.status_code,
                                                                               delta.total_seconds(),
-                                                                              titles_match())
+                                                                              titles_match)
         if not titles_match:
             log_message = "{0}, expected: {1}, found: {2}".format(log_message, expected_title, actual_title)
         if data['URLafterRedirect'] == r.url:
