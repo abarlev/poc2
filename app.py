@@ -36,7 +36,7 @@ def callback(ch, method, properties, body):
         if start > 7:
             title = body_text[start : end]
             #print('title: {0}, data["Title"]: {1}'.format(title, data['Title']))
-            if title == data['Title']:
+            if title.strip() == data['Title'].strip():
                 title_match = True
             else:
                 title_match = False
@@ -49,7 +49,7 @@ def callback(ch, method, properties, body):
                                                                               delta.total_seconds(),
                                                                               title_match)
         if is_title and not title_match:
-            log_message = "{0}, expected: {1}, found: {2}".format(log_message, title, data['Title'])
+            log_message = "{0}, expected: {1}, found: {2}".format(log_message, data['Title'].strip(), title.strip())
     print(log_message)
     # Not refilling queue yet
     #channel.basic_publish(exchange='', routing_key='sites', body=body)
