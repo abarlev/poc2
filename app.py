@@ -3,30 +3,34 @@ import pika
 import datetime
 import requests
 import json
+import re
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq.check-sites.svc.cluster.local'))
 channel = connection.channel()
 
-print("NEW VERSION!!! (checking for uppercase title tags)")
+print("NEW VERSION!!! (added my_strip())")
 
 channel.queue_declare(queue='sites')
 channel.queue_declare(queue='log')
 
 def get_title(body):
+    body = body.my_strip()
     start = body.find('<title>') + 7
     end = body.find('</title>')
     print("start: {0}, end: {1}".format(start, end))
     if start > 7 and end > 7:
-        title = body[start : end].strip()
+        title = body[start : end].my_strip()
         return title
     start = body.find('<TITLE>') + 7
     end = body.find('</TITLE>')
     print("start: {0}, end: {1}".format(start, end))
     if start > 7 and end > 7:
-        title = body[start : end].strip()
+        title = body[start : end].my_strip()
         return title
     return ''
     
+def my_strip(text):
+    return re.sub(' +', ' ', re.sub(r"[\n\t\s]", ' ', text[start:end])).strip()
     
 def callback(ch, method, properties, body):
     data = json.loads(body)
@@ -43,13 +47,10 @@ def callback(ch, method, properties, body):
         timeout = True
         log_message = "{0} Exception: {1} URL: {2}".format(str(datetime.datetime.now()), str(e), data['Site'])
     b = datetime.datetime.now()
+    
     if not timeout:
         delta = b - a
         title = get_title(r.text)
-        #body_text = r.text
-        #start = body_text.find('<title>') + 7
-        #end = body_text.find('</title>')
-        #print("start: {0}, end: {1}".format(start, end))
         if title == '':
             is_title = False
         else:
@@ -59,22 +60,6 @@ def callback(ch, method, properties, body):
                 title_match = True
             else:
                 title_match = False
-        #if start > 7:
-        #    title = body_text[start : end].strip()
-        #    #print('title: {0}, data["Title"]: {1}'.format(title, data['Title']))
-        #    if title == data['Title'].strip():
-        #        title_match = True
-        #    else:
-        #        start = body_text.find('<TITLE>') + 7
-        #        end = body_text.find('</TITLE>')
-        #        print("start: {0}, end: {1}".format(start, end))
-        #        title = body_text[start : end].strip()
-        #        if start > 7 and title == data['Title'].strip():
-        #            title_match = True
-        #        else:
-        #            title_match = False
-        #else:
-        #    title = 'no title found'
 
         log_message = "{0} URL: {1} http status code: {2} took {3} seconds. Title match: {4}".format(str(datetime.datetime.now()),
                                                                               data['Site'],
