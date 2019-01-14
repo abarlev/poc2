@@ -13,7 +13,7 @@ print("NEW VERSION!!! (added my_strip())")
 channel.queue_declare(queue='sites')
 channel.queue_declare(queue='log')
 
-def do_titles_match:
+def do_titles_match():
     expected_title = my_strip(data['Title'])
     if len(expected_title) <= 1:
         return false
