@@ -7,7 +7,7 @@ import json
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq.check-sites.svc.cluster.local'))
 channel = connection.channel()
 
-print("NEW VERSION!!! (added redirect check)")
+print("NEW VERSION!!! (now prints only url and not entire body, also returns )")
 
 channel.queue_declare(queue='sites')
 channel.queue_declare(queue='log')
@@ -25,7 +25,7 @@ def callback(ch, method, properties, body):
         r = requests.get(data['Site'])
     except Exception as e:
         timeout = True
-        log_message = "{0} Exception: {1} URL: {2}".format(str(datetime.datetime.now()), str(e), body)
+        log_message = "{0} Exception: {1} URL: {2}".format(str(datetime.datetime.now()), str(e), data['Site'])
     b = datetime.datetime.now()
     if not timeout:
         delta = b - a
@@ -43,7 +43,8 @@ def callback(ch, method, properties, body):
         else:
             title = 'no title found'
 
-        log_message = "{0} http status code: {1} took {2} seconds. Title match: {3}".format(str(datetime.datetime.now()), 
+        log_message = "{0} http status code: {1} took {2} seconds. Title match: {3}".format(str(datetime.datetime.now()),
+                                                                              data['Site'],
                                                                               r.status_code,
                                                                               delta.total_seconds(),
                                                                               title_match)
@@ -54,8 +55,8 @@ def callback(ch, method, properties, body):
         else:
             log_message = "{0}, URL redirect mismatch. Expected: {1}, found: {2}".format(log_message, data['URLafterRedirect'], r.url)
     print(log_message)
-    # Not refilling queue yet
-    #channel.basic_publish(exchange='', routing_key='sites', body=body)
+    
+    channel.basic_publish(exchange='', routing_key='sites', body=body)
     #print(" [x] Sent '%r'" % body)
 
 channel.basic_consume(callback,
