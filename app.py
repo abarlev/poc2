@@ -16,6 +16,9 @@ def callback(ch, method, properties, body):
     print(" [x] Received %r" % data)
     
     timeout = False
+    title_match = False
+    is_title = False
+    
     a = datetime.datetime.now()
     try:
         r = requests.get(data['Site'])
@@ -43,7 +46,7 @@ def callback(ch, method, properties, body):
                                                                               r.status_code,
                                                                               delta.total_seconds(),
                                                                               title_match)
-        if not title_match:
+        if is_title and not title_match:
             log_message = "{0}, expected: {1}, found: {2}".format(log_message, title, data[Title])
     print(log_message)
     # Not refilling queue yet
