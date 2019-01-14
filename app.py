@@ -14,18 +14,18 @@ channel.queue_declare(queue='sites')
 channel.queue_declare(queue='log')
 
 def get_title(body):
-    body = body.my_strip()
+    body = my_strip(body)
     start = body.find('<title>') + 7
     end = body.find('</title>')
     print("start: {0}, end: {1}".format(start, end))
     if start > 7 and end > 7:
-        title = body[start : end].my_strip()
+        title = my_strip(body[start : end])
         return title
     start = body.find('<TITLE>') + 7
     end = body.find('</TITLE>')
     print("start: {0}, end: {1}".format(start, end))
     if start > 7 and end > 7:
-        title = body[start : end].my_strip()
+        title = my_strip(body[start : end])
         return title
     return ''
     
@@ -56,7 +56,7 @@ def callback(ch, method, properties, body):
         else:
             is_title = True
         if is_title:
-            if title == data['Title'].strip():
+            if title == my_strip(data['Title']):
                 title_match = True
             else:
                 title_match = False
@@ -67,7 +67,7 @@ def callback(ch, method, properties, body):
                                                                               delta.total_seconds(),
                                                                               title_match)
         if is_title and not title_match:
-            log_message = "{0}, expected: {1}, found: {2}".format(log_message, data['Title'].strip(), title.strip())
+            log_message = "{0}, expected: {1}, found: {2}".format(log_message, my_strip(data['Title']), title)
         if data['URLafterRedirect'] == r.url:
             log_message = "{0}, URL redirect as expected".format(log_message)
         else:
