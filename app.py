@@ -7,6 +7,7 @@ import json
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq.check-sites.svc.cluster.local'))
 channel = connection.channel()
 
+print("NEW VERSION!!!")
 
 channel.queue_declare(queue='sites')
 channel.queue_declare(queue='log')
