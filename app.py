@@ -2,6 +2,7 @@
 import pika
 import datetime
 import requests
+import json
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq.check-sites.svc.cluster.local'))
 channel = connection.channel()
