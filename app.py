@@ -21,7 +21,7 @@ def do_titles_match(data, r):
             return false
         actual_title = get_title(r.text)
         return expected_title == actual_title
-    except:
+    except Exception as e:
         print('Exception: {0}'.format(str(e)))
         return False
 
@@ -46,7 +46,7 @@ def my_strip(text):
     print('my_strip()')
     try:
         return re.sub(' +', ' ', re.sub(r"[\n\t\s]", ' ', text)).strip()
-    except:
+    except Exception as e:
         print('Exception: {0}'.format(str(e)))
         return ''
     
@@ -101,4 +101,4 @@ print(' [*] Waiting for messages.')
 try:
     channel.start_consuming()
 except Exception as e:
-    print('Problem with accessing the queue: ' + str(e))
+    print('Problem somewhere in the code: ' + str(e))
