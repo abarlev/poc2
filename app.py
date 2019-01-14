@@ -42,7 +42,7 @@ def callback(ch, method, properties, body):
             else:
                 start = body_text.find('<TITLE>') + 7
                 end = body_text.find('</TITLE>')
-                print("start: {0}, end: {1}".format(start, end)
+                print("start: {0}, end: {1}".format(start, end))
                 title = body_text[start : end].strip()
                 if start > 7 and title == data['Title'].strip():
                     title_match = True
