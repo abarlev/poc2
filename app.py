@@ -14,6 +14,7 @@ channel.queue_declare(queue='sites')
 channel.queue_declare(queue='log')
 
 def do_titles_match(data, r):
+    print('do_titles_match()')
     expected_title = my_strip(data['Title'])
     if len(expected_title) <= 1:
         return false
@@ -21,6 +22,7 @@ def do_titles_match(data, r):
     return expected_title == actual_title
 
 def get_title(body):
+    print('get_title()')
     body = my_strip(body)
     start = body.find('<title>') + 7
     end = body.find('</title>')
