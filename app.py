@@ -7,7 +7,7 @@ import json
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq.check-sites.svc.cluster.local'))
 channel = connection.channel()
 
-print("NEW VERSION!!!")
+print("NEW VERSION!!! (added redirect check)")
 
 channel.queue_declare(queue='sites')
 channel.queue_declare(queue='log')
@@ -50,6 +50,10 @@ def callback(ch, method, properties, body):
                                                                               title_match)
         if is_title and not title_match:
             log_message = "{0}, expected: {1}, found: {2}".format(log_message, data['Title'].strip(), title.strip())
+        if data['URLafterRedirect'] == r.url:
+            log_message = "{0}, URL redirect as expected".format(log_message)
+        else:
+            log_message = "{0}, URL redirect mismatch. Expected: {1}, found: {2}".format(log_message, data['URLafterRedirect'], r.url)
     print(log_message)
     # Not refilling queue yet
     #channel.basic_publish(exchange='', routing_key='sites', body=body)
