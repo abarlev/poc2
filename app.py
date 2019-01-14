@@ -7,7 +7,7 @@ import json
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq.check-sites.svc.cluster.local'))
 channel = connection.channel()
 
-print("NEW VERSION!!! (corrected missing )")
+print("NEW VERSION!!! (checking for uppercase title tags)")
 
 channel.queue_declare(queue='sites')
 channel.queue_declare(queue='log')
@@ -34,12 +34,18 @@ def callback(ch, method, properties, body):
         end = body_text.find('</title>')
         is_title = True
         if start > 7:
-            title = body_text[start : end]
+            title = body_text[start : end].strip()
             #print('title: {0}, data["Title"]: {1}'.format(title, data['Title']))
-            if title.strip() == data['Title'].strip():
+            if title == data['Title'].strip():
                 title_match = True
             else:
-                title_match = False
+                start = body_text.find('<TITLE>') + 7
+                end = body_text.find('</TITLE>')
+                title = body_text[start : end].strip()
+                if start > 7 and title == data['Title'].strip():
+                    title_match = True
+                else:
+                    title_match = False
         else:
             title = 'no title found'
 
