@@ -32,7 +32,7 @@ def callback(ch, method, properties, body):
         body_text = r.text
         start = body_text.find('<title>') + 7
         end = body_text.find('</title>')
-        print("start: {0}, end: {1}".format(start, end)
+        print("start: {0}, end: {1}".format(start, end))
         is_title = True
         if start > 7:
             title = body_text[start : end].strip()
