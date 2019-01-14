@@ -14,7 +14,7 @@ channel.queue_declare(queue='log')
 
 def callback(ch, method, properties, body):
     data = json.loads(body)
-    print(" [x] Received %r" % data)
+    #print(" [x] Received %r" % data)
     
     timeout = False
     title_match = False
@@ -50,7 +50,7 @@ def callback(ch, method, properties, body):
                                                                               title_match)
         if is_title and not title_match:
             log_message = "{0}, expected: {1}, found: {2}".format(log_message, data['Title'].strip(), title.strip())
-    #print(log_message)
+    print(log_message)
     # Not refilling queue yet
     #channel.basic_publish(exchange='', routing_key='sites', body=body)
     #print(" [x] Sent '%r'" % body)
