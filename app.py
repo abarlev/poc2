@@ -30,7 +30,7 @@ def get_title(body):
     return ''
     
 def my_strip(text):
-    return re.sub(' +', ' ', re.sub(r"[\n\t\s]", ' ', text[start:end])).strip()
+    return re.sub(' +', ' ', re.sub(r"[\n\t\s]", ' ', text)).strip()
     
 def callback(ch, method, properties, body):
     data = json.loads(body)
