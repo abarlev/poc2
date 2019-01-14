@@ -15,11 +15,15 @@ channel.queue_declare(queue='log')
 
 def do_titles_match(data, r):
     print('do_titles_match()')
-    expected_title = my_strip(data['Title'])
-    if len(expected_title) <= 1:
-        return false
-    actual_title = get_title(r.text)
-    return expected_title == actual_title
+    try:
+        expected_title = my_strip(data['Title'])
+        if len(expected_title) <= 1:
+            return false
+        actual_title = get_title(r.text)
+        return expected_title == actual_title
+    except:
+        print('Exception: {0}'.format(str(e)))
+        return False
 
 def get_title(body):
     print('get_title()')
