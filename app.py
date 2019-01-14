@@ -31,7 +31,7 @@ def callback(ch, method, properties, body):
         is_title = True
         if start > 7:
             title = body_text[start : end]
-            if title == data[Title]:
+            if title == data['Title']:
                 title_match = True
             else:
                 title_match = False
