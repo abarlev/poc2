@@ -13,6 +13,13 @@ print("NEW VERSION!!! (added my_strip())")
 channel.queue_declare(queue='sites')
 channel.queue_declare(queue='log')
 
+def do_titles_match:
+    expected_title = my_strip(data['Title'])
+    if len(expected_title) <= 1:
+        return false
+    actual_title = get_title(r.text)
+    return expected_title == actual_title
+
 def get_title(body):
     body = my_strip(body)
     start = body.find('<title>') + 7
@@ -39,6 +46,7 @@ def callback(ch, method, properties, body):
     timeout = False
     title_match = False
     is_title = False
+    return_to_queue = True
     
     a = datetime.datetime.now()
     try:
@@ -46,36 +54,33 @@ def callback(ch, method, properties, body):
     except Exception as e:
         timeout = True
         log_message = "{0} Exception: {1} URL: {2}".format(str(datetime.datetime.now()), str(e), data['Site'])
+        return_to_queue = False
     b = datetime.datetime.now()
     
     if not timeout:
         delta = b - a
-        title = get_title(r.text)
-        if title == '':
-            is_title = False
-        else:
-            is_title = True
-        if is_title:
-            if title == my_strip(data['Title']):
-                title_match = True
-            else:
-                title_match = False
+        
+        titles_match = do_titles_match()
+        if not titles_match:
+            actual_title = get_title(r.text)
+            expected_title = my_strip(data['Title'])
 
         log_message = "{0} URL: {1} http status code: {2} took {3} seconds. Title match: {4}".format(str(datetime.datetime.now()),
                                                                               data['Site'],
                                                                               r.status_code,
                                                                               delta.total_seconds(),
-                                                                              title_match)
-        if is_title and not title_match:
-            log_message = "{0}, expected: {1}, found: {2}".format(log_message, my_strip(data['Title']), title)
+                                                                              titles_match())
+        if not titles_match:
+            log_message = "{0}, expected: {1}, found: {2}".format(log_message, expected_title, actual_title)
         if data['URLafterRedirect'] == r.url:
             log_message = "{0}, URL redirect as expected".format(log_message)
         else:
             log_message = "{0}, URL redirect mismatch. Expected: {1}, found: {2}".format(log_message, data['URLafterRedirect'], r.url)
     print(log_message)
     
-    channel.basic_publish(exchange='', routing_key='sites', body=body)
-    #print(" [x] Sent '%r'" % body)
+    if return_to_queue:
+        channel.basic_publish(exchange='', routing_key='sites', body=body)
+        #print(" [x] Sent '%r'" % body)
 
 channel.basic_consume(callback,
                       queue='sites',
