@@ -7,7 +7,7 @@ import json
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq.check-sites.svc.cluster.local'))
 channel = connection.channel()
 
-print("NEW VERSION!!! (now prints only url and not entire body, also returns )")
+print("NEW VERSION!!! (corrected missing )")
 
 channel.queue_declare(queue='sites')
 channel.queue_declare(queue='log')
@@ -43,7 +43,7 @@ def callback(ch, method, properties, body):
         else:
             title = 'no title found'
 
-        log_message = "{0} http status code: {1} took {2} seconds. Title match: {3}".format(str(datetime.datetime.now()),
+        log_message = "{0} URL: {1} http status code: {2} took {3} seconds. Title match: {4}".format(str(datetime.datetime.now()),
                                                                               data['Site'],
                                                                               r.status_code,
                                                                               delta.total_seconds(),
