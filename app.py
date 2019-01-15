@@ -8,10 +8,7 @@ import re
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq.check-sites.svc.cluster.local'))
 channel = connection.channel()
 
-print("NEW VERSION!!! (added my_strip())")
-
 channel.queue_declare(queue='sites')
-channel.queue_declare(queue='log')
 
 def do_titles_match(data, r):
     print('do_titles_match()')
