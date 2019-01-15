@@ -17,30 +17,21 @@ def do_titles_match(data, r):
     print('do_titles_match()')
     try:
         expected_title = my_strip(data['Title'])
-        if len(expected_title) <= 1:
-            return false
         actual_title = get_title(r.text)
-        return expected_title == actual_title
+        return [expected_title == actual_title, expected_title, actual_title]
     except Exception as e:
         print('Exception: {0}'.format(str(e)))
-        return False
+        return [False, 'Error', 'Error']
 
 def get_title(body):
     print('get_title()')
-    body = my_strip(body)
-    start = body.find('<title>') + 7
-    end = body.find('</title>')
-    print("start: {0}, end: {1}".format(start, end))
-    if start > 7 and end > 7:
-        title = my_strip(body[start : end])
+    a = re.search('<(title|TITLE)>.*</(title|TITLE)>', body)
+    title = a.group()[7:len(a.group())-8]
+    if title is None:
+        return ''
+    else:
+        title = my_strip(title[start : end])
         return title
-    start = body.find('<TITLE>') + 7
-    end = body.find('</TITLE>')
-    print("start: {0}, end: {1}".format(start, end))
-    if start > 7 and end > 7:
-        title = my_strip(body[start : end])
-        return title
-    return ''
     
 def my_strip(text):
     print('my_strip()')
@@ -72,16 +63,16 @@ def callback(ch, method, properties, body):
         delta = b - a
         
         titles_match = do_titles_match(body, r)
-        if not titles_match:
-            actual_title = get_title(r.text)
-            expected_title = my_strip(data['Title'])
+        if not titles_match[0]:
+            actual_title = titles_match[2]
+            expected_title = titles_match[1]
 
         log_message = "{0} URL: {1} http status code: {2} took {3} seconds. Title match: {4}".format(str(datetime.datetime.now()),
                                                                               data['Site'],
                                                                               r.status_code,
                                                                               delta.total_seconds(),
-                                                                              titles_match)
-        if not titles_match:
+                                                                              titles_match[0])
+        if not titles_match[0]:
             log_message = "{0}, expected: {1}, found: {2}".format(log_message, expected_title, actual_title)
         if data['URLafterRedirect'] == r.url:
             log_message = "{0}, URL redirect as expected".format(log_message)
