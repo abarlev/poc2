@@ -4,6 +4,7 @@ import datetime
 import requests
 import json
 import re
+import requests_pkcs12
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq.check-sites.svc.cluster.local'))
 channel = connection.channel()
@@ -50,6 +51,8 @@ def callback(ch, method, properties, body):
     a = datetime.datetime.now()
     try:
         r = requests.get(data['Site'])
+        # Need to bring the GalGadot.pfx file into the container
+        #r = requests_pkcs12.get(data['Site'], pkcs12_filename='GalGadot.pfx', pkcs12_password='Tehila!@')
     except Exception as e:
         timeout = True
         log_message = "{0} Exception: {1} URL: {2}".format(str(datetime.datetime.now()), str(e), data['Site'])
