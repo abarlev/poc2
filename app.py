@@ -6,7 +6,7 @@ import json
 import re
 import requests_pkcs12
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq.check-sites.svc.cluster.local'))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
 channel = connection.channel()
 
 channel.queue_declare(queue='sites')
@@ -28,7 +28,7 @@ def get_title(body):
     if title is None:
         return ''
     else:
-        title = my_strip(title[start : end])
+        title = my_strip(title)
         return title
     
 def my_strip(text):
@@ -62,7 +62,7 @@ def callback(ch, method, properties, body):
     if not timeout:
         delta = b - a
         
-        titles_match = do_titles_match(body, r)
+        titles_match = do_titles_match(data, r)
         if not titles_match[0]:
             actual_title = titles_match[2]
             expected_title = titles_match[1]
@@ -83,10 +83,12 @@ def callback(ch, method, properties, body):
     if return_to_queue:
         channel.basic_publish(exchange='', routing_key='sites', body=body)
         #print(" [x] Sent '%r'" % body)
+    channel.basic_ack(delivery_tag = method.delivery_tag)
 
+channel.basic_qos(prefetch_count=1)
 channel.basic_consume(callback,
                       queue='sites',
-                      no_ack=True)
+                      no_ack=False)
 
 print(' [*] Waiting for messages.')
 try:
